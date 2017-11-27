@@ -45,3 +45,15 @@ softnet = trainSoftmaxLayer(feat2,tTrain,'MaxEpochs',400);
 
 %viewing the softmax layer
 view(softnet)
+
+%stacking to form a deepnet
+deepnet = stack(autoenc1,autoenc2,softnet);
+
+%viewing the deepnet
+view(deepnet)
+
+%modifying the test images into vectors
+inputSize = 28*28;
+
+%loading the testImages 
+[xTestImages,tTest] = digitTestCellArrayData;
