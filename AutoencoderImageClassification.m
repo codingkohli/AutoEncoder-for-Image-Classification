@@ -4,11 +4,12 @@
 %loading the dataset
 load('data.mat');
 
-%displaying images
+%{displaying images
 for i =1:20
 	subplot(4,5,i);
 	imshow(xTrainImages{i});
 end
+%}
 
 %setting the weights of a nueral net to default instead of random
 rng('default')
@@ -19,3 +20,28 @@ autoenc1 = trainAutoencoder(xTrainImages,hiddenSize1,'MaxEpochs',400,'L2WeightRe
 
 %viewing the autoenc1
 view(autoenc1)
+
+%{plotting the weights 
+figure()
+plotWeights(autoenc1);
+%}
+
+%getting the features from the first encoder
+feat1 = encode(autoenc1,xTrainImages);
+
+
+% training the 2nd autoencoder
+hiddenSize2 = 50;
+autoenc2 = trainAutoencoder(feat1,hiddenSize2,'MaxEpochs',100,'L2WeightRegularization',0.002,'SparsityRegularization',4,'SparsityProportion',0.1,'ScaleData',false);
+
+%viewing the autoenc2
+view(autoenc2)
+
+%getting the features of the second layer 
+feat2 = encode(autoenc2,feat1);
+
+%training the final softmax layer
+softnet = trainSoftmaxLayer(feat2,tTrain,'MaxEpochs',400);
+
+%viewing the softmax layer
+view(softnet)
